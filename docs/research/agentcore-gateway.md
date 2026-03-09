@@ -100,7 +100,7 @@ flowchart TD
 - ゲートウェイがリクエストをルーティングし、認証を統合管理
 - クライアント側でカスタム MCP クライアントロジックが不要
 
-> **TODO（将来調査）**: ネイティブ MCP サーバー向けの認証認可フローの技術的詳細（Gateway ↔ MCP サーバー間の認証方式、クライアント認証コンテキストの伝播方法、対応する認証スキームの一覧等）は別途調査が必要。詳細は [masterplan.md の Task 3b](../masterplan.md) を参照。
+Gateway ↔ MCP サーバー間の認証方式・認証コンテキストの伝播・対応スキームの詳細は、[agentcore-gateway-mcp-auth.md](agentcore-gateway-mcp-auth.md) を参照してください。
 
 ---
 
