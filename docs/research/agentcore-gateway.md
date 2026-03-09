@@ -14,17 +14,42 @@ AgentCore Gateway は、REST API・AWS Lambda 関数・MCP（Model Context Proto
 ## M×N 統合問題とその解決
 
 **課題（M×N 統合）:**
-```
-[エージェント A] → [API 1], [API 2], [Lambda 1]...  (個別実装が必要)
-[エージェント B] → [API 1], [API 2], [Lambda 2]...  (重複する統合コード)
-[エージェント C] → [API 2], [API 3], [MCP サーバー] (一貫性のない認証)
+
+```mermaid
+flowchart LR
+    A1[エージェント A]
+    A2[エージェント B]
+    A3[エージェント C]
+    T1[API 1]
+    T2[API 2]
+    T3[Lambda 1]
+    T4[Lambda 2]
+    T5[MCP サーバー]
+
+    A1 --> T1
+    A1 --> T2
+    A1 --> T3
+    A2 --> T1
+    A2 --> T2
+    A2 --> T4
+    A3 --> T2
+    A3 --> T5
 ```
 
 **解決策（Gateway を中央ハブ化）:**
-```
-[エージェント A] ─┐
-[エージェント B] ─┼→ [AgentCore Gateway] → [API 1, API 2, Lambda, MCP ...]
-[エージェント C] ─┘
+
+```mermaid
+flowchart LR
+    B1[エージェント A]
+    B2[エージェント B]
+    B3[エージェント C]
+    GW["AgentCore Gateway"]
+    Tools["API 1 / API 2\nLambda / MCP ..."]
+
+    B1 --> GW
+    B2 --> GW
+    B3 --> GW
+    GW --> Tools
 ```
 
 単一のゲートウェイエンドポイントを介してすべてのツールにアクセス可能となり、統合コードの重複と認証管理の複雑さを排除します。
@@ -33,24 +58,24 @@ AgentCore Gateway は、REST API・AWS Lambda 関数・MCP（Model Context Proto
 
 ## アーキテクチャ
 
-```
-[エージェント]
-    |
-    | MCP プロトコル
-    ↓
-[AgentCore Gateway MCP エンドポイント]
-    |
-    ├── [認証レイヤー]
-    |       ├── インバウンド: OAuth2/JWT 検証
-    |       └── アウトバウンド: API キー / IAM / OAuth2 で外部サービスを呼び出し
-    |
-    ├── [ツールレジストリ]
-    |       └── セマンティック検索でツールを発見
-    |
-    └── [統合ターゲット]
-            ├── REST API (OpenAPI 仕様から自動生成)
-            ├── AWS Lambda 関数
-            └── ネイティブ MCP サーバー
+```mermaid
+flowchart TD
+    Agent["エージェント"]
+    Endpoint["AgentCore Gateway\nMCP エンドポイント"]
+    AuthIn["インバウンド認証\nOAuth2/JWT 検証"]
+    AuthOut["アウトバウンド認証\nAPI キー / IAM / OAuth2"]
+    Registry["ツールレジストリ\n(セマンティック検索)"]
+    REST["REST API\n(OpenAPI 仕様から自動生成)"]
+    Lambda["AWS Lambda 関数"]
+    MCP["ネイティブ MCP サーバー"]
+
+    Agent -->|"MCP プロトコル"| Endpoint
+    Endpoint --> AuthIn
+    Endpoint --> AuthOut
+    Endpoint --> Registry
+    Endpoint --> REST
+    Endpoint --> Lambda
+    Endpoint --> MCP
 ```
 
 ---
@@ -75,16 +100,21 @@ AgentCore Gateway は、REST API・AWS Lambda 関数・MCP（Model Context Proto
 - ゲートウェイがリクエストをルーティングし、認証を統合管理
 - クライアント側でカスタム MCP クライアントロジックが不要
 
+> **TODO（将来調査）**: ネイティブ MCP サーバー向けの認証認可フローの技術的詳細（Gateway ↔ MCP サーバー間の認証方式、クライアント認証コンテキストの伝播方法、対応する認証スキームの一覧等）は別途調査が必要。詳細は [masterplan.md の Task 3b](../masterplan.md) を参照。
+
 ---
 
 ## 主要機能
 
 ### セマンティックツール検索
 
-```
-エージェント: "ファイルを読み取れるツールが欲しい"
-     ↓
-Gateway: [セマンティック検索] → "read_file" ツールを推薦
+```mermaid
+flowchart LR
+    Query["エージェント\n「ファイルを読み取れるツールが欲しい」"]
+    Search["Gateway\nセマンティック検索"]
+    Tool["\"read_file\" ツールを推薦"]
+
+    Query --> Search --> Tool
 ```
 
 自然言語クエリでエージェントが適切なツールを動的に発見・利用可能。

@@ -31,17 +31,18 @@ AgentCore Memory は、AI エージェントがセッションを跨いで会話
 
 ## アーキテクチャ
 
-```
-[セッション中]
-エージェント → create_event() → [STM ストレージ]
-                                      ↓ (非同期・バックグラウンド)
-                              [メモリ戦略エンジン]
-                                      ↓
-                              [LTM ストレージ (ベクターDB)]
+```mermaid
+flowchart TD
+    Agent["エージェント"]
+    STM["STM ストレージ"]
+    Strategy["メモリ戦略エンジン"]
+    LTM["LTM ストレージ\n(ベクターDB)"]
 
-[次セッション開始時]
-エージェント ← retrieve_memories() ← [LTM ストレージ]
-エージェント ← list_events()       ← [STM ストレージ]
+    Agent -->|"create_event()"| STM
+    STM -->|"非同期・バックグラウンド"| Strategy
+    Strategy --> LTM
+    LTM -->|"retrieve_memories()"| Agent
+    STM -->|"list_events()"| Agent
 ```
 
 ---

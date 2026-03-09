@@ -133,25 +133,29 @@ REST API・AWS Lambda 関数・MCP（Model Context Protocol）サーバーを、
 
 ## コンポーネント間の関係と連携パターン
 
-```
-[エンドユーザー / クライアント]
-        |
-        | (IAM SigV4 / JWT)
-        ↓
-[AgentCore Identity] ←→ [外部 IdP: Cognito, Okta 等]
-        |
-        | (認証済みリクエスト)
-        ↓
-[AgentCore Runtime] ──────────────────────────────────────────────────┐
-  (microVM でエージェント実行)                                          |
-        |                                                              |
-        ├──→ [AgentCore Memory]  (セッション内 STM + 長期 LTM 取得)     |
-        |                                                              |
-        ├──→ [AgentCore Gateway] ──→ [REST API / Lambda / MCP サーバー] |
-        |                                                              |
-        ├──→ [AgentCore Tools]   (ブラウザ / コードインタープリター)     |
-        |                                                              |
-        └──→ [AgentCore Observability] (ログ・メトリクス・トレース)──────┘
+```mermaid
+flowchart TD
+    User["エンドユーザー / クライアント"]
+    Identity["AgentCore Identity"]
+    IdP["外部 IdP\n(Cognito, Okta 等)"]
+    Runtime["AgentCore Runtime\n(microVM でエージェント実行)"]
+    Memory["AgentCore Memory\n(STM + LTM)"]
+    Gateway["AgentCore Gateway"]
+    Backends["REST API / Lambda / MCP サーバー"]
+    Tools["AgentCore Tools\n(ブラウザ / コードインタープリター)"]
+    Obs["AgentCore Observability\n(ログ・メトリクス・トレース)"]
+
+    User -->|"IAM SigV4 / JWT"| Identity
+    Identity <-->|"IdP 連携"| IdP
+    Identity -->|"認証済みリクエスト"| Runtime
+    Runtime --> Memory
+    Runtime --> Gateway
+    Gateway --> Backends
+    Runtime --> Tools
+    Runtime --> Obs
+    Memory --> Obs
+    Gateway --> Obs
+    Tools --> Obs
 ```
 
 ### 主要な連携パターン
