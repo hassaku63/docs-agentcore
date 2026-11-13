@@ -73,6 +73,8 @@ AgentCore は 2025 年に発表された比較的新しいサービスファミ�
 - [agentcore-tools.md](../research/agentcore-tools.md) — Tools（Browser / Code Interpreter）の詳細
 - [agentcore-gateway.md](../research/agentcore-gateway.md) — Gateway の詳細
 
+2026-11-11 に公式情報を再確認し、Runtime V2、Python / Node.js 直接コードデプロイ、Memory ライフサイクル設計、Gateway Web Answer、更新された認証・クォータ参照を各調査資料へ反映した。仕様やクォータは変動するため、固定値の記載を避けて AWS の最新ガイドへ誘導する。
+
 ### 検証
 
 完了条件をすべて確認済み:

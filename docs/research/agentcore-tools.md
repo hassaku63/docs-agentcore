@@ -1,7 +1,7 @@
 # AgentCore Tools 詳細
 
-> **調査日**: 2026-03-09  
-> **情報の鮮度**: 2025年下半期時点の公式情報に基づく
+> **調査日**: 2026-11-11
+> **情報源**: AWS 公式 Developer Guide、What's New、Release notes。提供リージョンや上限は変わるため、利用時はリンク先の最新情報を確認してください。
 
 ---
 
@@ -77,7 +77,7 @@ AI エージェントが Python 等のコードを完全管理された隔離 VM
 |------|-----|
 | VM 分離 | セッションごとに専用 VM |
 | ストレージ | エフェメラル（セッション終了時に削除） |
-| スケーリング | アカウントあたり最大 3,000 同時セッション |
+| スケーリング | リージョン・Service Quotas による（固定値ではない） |
 | ネットワーク | VPC 接続・AWS PrivateLink 対応 |
 | 監視 | CloudWatch + OpenTelemetry |
 
@@ -85,6 +85,9 @@ AI エージェントが Python 等のコードを完全管理された隔離 VM
 
 ## 参照リソース
 
+- [AWS Docs: AgentCore Release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html)
+- [AWS Docs: AgentCore のリージョン](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html)
+- [AWS Docs: Runtime と Tools の VPC 設定](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-vpc.html)
 - [AWS Blog: Introducing the AgentCore Code Interpreter](https://aws.amazon.com/blogs/machine-learning/introducing-the-amazon-bedrock-agentcore-code-interpreter/)
 - [GitHub チュートリアル: Code Interpreter](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/05-AgentCore-tools/01-Agent-Core-code-interpreter)
 - [GitHub チュートリアル: Browser Tool](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/05-AgentCore-tools/02-Agent-Core-browser-tool)

@@ -1,7 +1,7 @@
 # AgentCore Gateway 詳細
 
-> **調査日**: 2026-03-09  
-> **情報の鮮度**: 2025年下半期時点の公式情報に基づく
+> **調査日**: 2026-11-11
+> **情報源**: AWS 公式 Developer Guide、Release notes、What's New。ターゲット別の認証方式・提供リージョンは変更されるため、構成時はリンク先の最新情報を確認してください。
 
 ---
 
@@ -100,7 +100,9 @@ flowchart TD
 - ゲートウェイがリクエストをルーティングし、認証を統合管理
 - クライアント側でカスタム MCP クライアントロジックが不要
 
-> **TODO（将来調査）**: ネイティブ MCP サーバー向けの認証認可フローの技術的詳細（Gateway ↔ MCP サーバー間の認証方式、クライアント認証コンテキストの伝播方法、対応する認証スキームの一覧等）は別途調査が必要。詳細は [masterplan.md の Task 3b](../masterplan.md) を参照。
+### 4. Web Answer コネクター
+
+2026 年 11 月に一般提供された Gateway のマネージドコネクターです。エージェントが自然言語の質問を MCP ツールとして送ると、Web 上の情報を検索・要約し、出典付きの回答を返します。一般提供開始時点の AWS 発表では `us-east-1` で利用可能とされています。リージョンや料金などの条件は変更されるため、利用前に AWS のリージョン一覧・What's New を確認してください。
 
 ---
 
@@ -121,10 +123,9 @@ flowchart LR
 
 ### 双方向認証管理
 
-| 方向 | 認証方式 |
-|------|---------|
-| インバウンド（エージェント → Gateway） | OAuth2/JWT、AWS IAM |
-| アウトバウンド（Gateway → 外部 API） | API キー、OAuth2、AWS IAM |
+Gateway の認証は、呼び出し元から Gateway への**インバウンド認証**と、Gateway からターゲットへの**アウトバウンド認証**を分けて構成します。どちらの方式を使えるかは Gateway とターゲットの種類に依存します。ユーザーの認証コンテキストを下流へ渡す場合も自動伝播を前提とせず、対象フロー（例: OAuth 認可コードフローやトークン交換）を明示的に設定してください。
+
+ターゲット別の対応スキーム一覧と伝播フローの詳細は、[masterplan.md の Task 3b](../masterplan.md) で一次資料を照合中です。
 
 ### SynchronizeGateway API
 
@@ -180,6 +181,14 @@ client.synchronize_gateway(gatewayId=gateway["gatewayId"])
 
 ## 参照リソース
 
+- [AWS Docs: Gateway inbound authorization](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-inbound-auth.html)
+- [AWS Docs: Gateway outbound authorization](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-outbound-auth.html)
+- [AWS Docs: ターゲット認証の設定](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-building-adding-targets-authorization.html)
+- [AWS Docs: MCP サーバーを Gateway ターゲットとして接続](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-mcp-target.html)
+- [AWS Docs: AgentCore Release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html)
+- [AWS What's New: Web Answer コネクター（2026-11）](https://aws.amazon.com/about-aws/whats-new/2026/11/web-answer-amazon-bedrock/)
+- [AWS Blog: Getting started with Web Answer on AgentCore](https://aws.amazon.com/blogs/machine-learning/getting-started-with-web-answer-on-amazon-bedrock-agentcore/)
+- [AWS Blog: MCP サーバーへの認可コードフロー接続](https://aws.amazon.com/blogs/machine-learning/connecting-mcp-servers-to-amazon-bedrock-agentcore-gateway-using-authorization-code-flow/)
 - [AWS Blog: Introducing AgentCore Gateway](https://aws.amazon.com/blogs/machine-learning/introducing-amazon-bedrock-agentcore-gateway-transforming-enterprise-ai-agent-tool-development/)
 - [AWS Blog: Unite MCP servers through AgentCore Gateway](https://aws.amazon.com/blogs/machine-learning/transform-your-mcp-architecture-unite-mcp-servers-through-agentcore-gateway/)
 - [GitHub チュートリアル: Gateway](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway)

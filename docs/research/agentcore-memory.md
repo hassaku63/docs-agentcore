@@ -1,7 +1,7 @@
 # AgentCore Memory 詳細
 
-> **調査日**: 2026-03-09  
-> **情報の鮮度**: 2025年下半期時点の公式情報に基づく
+> **調査日**: 2026-11-11
+> **情報源**: AWS 公式 Developer Guide、AWS Blog。戦略・保持期間・利用可能機能は変更されるため、利用時はリンク先の最新情報を確認してください。
 
 ---
 
@@ -58,6 +58,10 @@ LTM への情報抽出方法を定義するカスタマイズ可能な戦略:
 | ユーザー設定 | ユーザーの好み・設定情報を構造化して保存 |
 | カスタム | ビジネス要件に応じたカスタムスキーマ・カテゴリを定義 |
 
+### 記憶のライフサイクル管理
+
+記憶は蓄積するだけでなく、古くなった情報や不要な情報を整理する必要があります。2026 年 9 月に AWS Blog が公開した実装例では、Step Functions 等を使い、時間による期限切れ、関連性の評価、記憶の統合を行います。これは AgentCore Memory に標準で備わる自動削除ポリシーではなく、アプリケーション側で実装する運用パターンです。保持期間や削除要件は、用途・プライバシー要件に合わせて設計してください。
+
 ---
 
 ## 主要な API
@@ -98,7 +102,9 @@ Strands Agents 等のフレームワークでは、セッションマネージ�
 
 ## 参照リソース
 
+- [AWS Blog: Designing lifecycle policies for AgentCore memory（2026-09）](https://aws.amazon.com/blogs/machine-learning/designing-lifecycle-policies-for-agentcore-memory/)
 - [AWS Docs: AgentCore Memory はじめに](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory-get-started.html)
+- [AWS Docs: AgentCore Release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html)
 - [Memory Quickstart - bedrock-agentcore-starter-toolkit](https://aws.github.io/bedrock-agentcore-starter-toolkit/user-guide/memory/quickstart.html)
 - [GitHub チュートリアル: Memory](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/04-AgentCore-memory)
 - [Amazon AgentCore Memory - Strands Agents 統合](https://strandsagents.com/latest/documentation/docs/community/session-managers/agentcore-memory/)
