@@ -1,7 +1,7 @@
 # Amazon Bedrock AgentCore ファミリー全体概要
 
-> **調査日**: 2026-03-09  
-> **情報の鮮度**: 2025年下半期時点の公式情報に基づく
+> **調査日**: 2026-11-11
+> **情報源**: AWS 公式 Developer Guide、Release notes、What's New、AWS Blog。クォータ・リージョン・対応方式は変更されるため、利用時はリンク先の最新情報を確認してください。
 
 ---
 
@@ -38,9 +38,10 @@ AgentCore ファミリーは以下の 6 つのコンポーネントで構成さ�
 - **microVM による完全セッション分離**: AWS Firecracker 技術を活用し、セッションごとに専用の microVM を起動。CPU・メモリ・ファイルシステムを完全に分離し、セッション間のデータ漏洩を防止
 - **長時間実行セッション対応**: 最大 8 時間のセッション継続が可能。複雑なマルチターン推論や長時間ワークフローに対応
 - **エフェメラル実行環境**: セッション終了時に microVM は完全に破棄され、すべてのリソースがサニタイズされる
-- **フレームワーク非依存**: LangGraph、Strands Agents、CrewAI など任意のフレームワークで実装したエージェントをコンテナ（ARM64）としてデプロイ可能
+- **複数のデプロイ方式**: コンテナイメージに加え、Python と Node.js の直接コードデプロイに対応
+- **Runtime V2**: 2026 年 9 月に利用可能となったプラットフォームバージョン。スナップショットからの起動と弾力的なメモリ管理を提供
 - **可観測性**: CloudWatch との統合による詳細なモニタリング・監査ログ・リソース使用状況の可視化
-- **スケーリング**: アカウントあたり最大 3,000 の同時 Runtime/Browser セッションをサポート
+- **スケーリング**: 同時セッション等の上限はリージョン・クォータに依存するため、固定値ではなく最新の Service Quotas を確認
 
 **詳細**: [agentcore-runtime.md](agentcore-runtime.md)
 
@@ -128,6 +129,16 @@ REST API・AWS Lambda 関数・MCP（Model Context Protocol）サーバーを、
 - CloudWatch との統合によるダッシュボードとアラート
 - セッション単位の詳細な実行ログとリソース使用状況の記録
 - コンプライアンス要件に対応した監査ログ
+- Runtime V2 ではプラットフォーム処理時間を把握する `OverheadLatency` メトリクスが追加
+
+---
+
+## 2026 年の主な更新
+
+- **Runtime**: V2 が利用可能になり、スナップショット起動・弾力的なメモリ管理が追加されました。Python に加えて Node.js の直接コードデプロイにも対応しています。
+- **Gateway**: 2026 年 11 月に Web Answer コネクターが一般提供され、自然言語の質問に対する出典付き Web 回答を MCP ツールとして利用できるようになりました。利用可能リージョンは公式情報を確認してください。
+- **Memory**: AWS Blog で、記憶の期限切れ・関連性評価・統合を行うライフサイクルポリシーの実装例が公開されています。これは Memory の標準機能そのものではなく、Step Functions 等を使った運用パターンです。
+- **Observability**: 2026 年に Runtime テレメトリの単一 CloudWatch ロググループへの統合が発表されています。既存 Runtime への適用条件は公式ガイドを確認してください。
 
 ---
 
@@ -183,9 +194,13 @@ flowchart TD
 
 ### AWS 公式ドキュメント
 - [Amazon Bedrock AgentCore Developer Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/)
+- [AgentCore Release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html)
 - [AgentCore Runtime - セッション分離](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-sessions.html)
 - [AgentCore Memory - はじめに](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory-get-started.html)
 - [AgentCore Identity - 認証・認可](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html)
+- [AgentCore Runtime V2 - AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/09/new-agentcore-runtime-generally-available/)
+- [Web Answer - AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/web-answer-amazon-bedrock/)
+- [AgentCore unified observability - AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/07/amazon-bedrock-agentcore-unified-observability-single-log-group/)
 
 ### GitHub サンプルコード
 - [awslabs/amazon-bedrock-agentcore-samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples)

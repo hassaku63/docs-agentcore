@@ -1,7 +1,7 @@
 # AgentCore Identity 詳細
 
-> **調査日**: 2026-03-09  
-> **情報の鮮度**: 2025年下半期時点の公式情報に基づく
+> **調査日**: 2026-11-11
+> **情報源**: AWS 公式 Developer Guide、Release notes。利用可能な認証方式はリソース種別・設定によって異なるため、構成時は各 API の最新ガイドを確認してください。
 
 ---
 
@@ -32,7 +32,6 @@ AgentCore Identity は、AI エージェントとユーザーの認証・認可�
 OIDC 設定は、ディスカバリー URL とオーディエンス検証で構成します。
 
 ### 3. アウトバウンド認証（Outbound Auth）
-
 エージェントが外部 API を呼び出す際の資格情報管理：
 
 | 認証方法 | 説明 |
@@ -40,6 +39,8 @@ OIDC 設定は、ディスカバリー URL とオーディエンス検証で構�
 | OAuth2 (2-Legged) | エージェント自体を主体としたクライアントクレデンシャルフロー |
 | OAuth2 (3-Legged / 3LO) | ユーザーを代理した委任認可フロー（Google Drive、GitHub 等） |
 | API キー | 静的 API キーによる外部サービス認証 |
+
+インバウンド認証に成功したことだけで、同じユーザーの認証コンテキストが外部 API に自動転送されるわけではありません。ユーザー委任が必要な場合は、対象サービスと認証プロバイダーがサポートする OAuth フローやトークン交換を明示的に構成し、最小権限で検証してください。
 
 ### 4. トークンボルト（Token Vault）
 
@@ -121,6 +122,7 @@ resource "aws_bedrockagentcore_workload_identity" "my_agent" {
 
 ## 参照リソース
 
+- [AWS Docs: AgentCore Release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html)
 - [AWS Docs: インバウンド/アウトバウンド認証](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html)
 - [AWS Docs: OAuth2 アクセストークン取得](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/identity-authentication.html)
 - [Identity CLI Quickstart](https://aws.github.io/bedrock-agentcore-starter-toolkit/user-guide/identity/quickstart-with-cli.html)
